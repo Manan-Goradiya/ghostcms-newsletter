@@ -10,9 +10,7 @@ resource "aws_nat_gateway" "nat"{
       Name = var.name
     }
   )
-#  lifecycle {
-   
-#  }
+
 }
 # remove it , patching it with data block
 resource "aws_eip" "nat" {
@@ -24,6 +22,3 @@ resource "aws_eip" "nat" {
   } 
   )
 }
-# data "aws_eip" "nat" {    use this production ad apply lifecyle for creating it every apply 
-#   id = var.alloaction_id
-# }

@@ -60,11 +60,6 @@ variable "public_access_cidrs" {
   type        = list(string)
 }
 
-
-# variable "region_aws" {
-#   description = "AWS region of EKS cluster"
-#   type        = string
-# }
 variable "aws_region" {
   description = "AWS region of csi-secret-driver"
   type        = string

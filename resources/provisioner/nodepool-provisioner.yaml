@@ -1,12 +1,12 @@
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
-  name: gnostcms-nodepool
+  name: ghostcms-nodepool
 spec:
   template:
     metadata:
       labels:
-        intent: gnostcms-stag
+        intent: ghostcms-stag
     spec:
       requirements:
         - key: karpenter.sh/capacity-type
@@ -24,7 +24,7 @@ spec:
       nodeClassRef:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
-        name: gnostcms-ec2nodeclass
+        name: ghostcms-ec2nodeclass
   limits:
     cpu: 100
   disruption:
@@ -34,7 +34,7 @@ spec:
 apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
-  name: gnostcms-ec2nodeclass
+  name: ghostcms-ec2nodeclass
 spec:
   amiFamily: AL2023
   amiSelectorTerms:
@@ -48,7 +48,7 @@ spec:
   instanceProfile: "${INSTANCE_PROFILE}" # replace with your cluster name
   subnetSelectorTerms:
     - tags:
-        karpenter.sh/discovery: "${cluster_name}" # replace with your cluster name
+        karpenter.sh/discovery: "workload-subnet" # replace with your cluster name
   securityGroupSelectorTerms:
     - id: ${EKS_NODE_SG}
 
@@ -60,13 +60,13 @@ spec:
 
   tags:
     karpenter.sh/discovery: ${cluster_name}
-    Name: "gnostcms-nodepool"
+    Name: "ghostcms-nodepool"
     created_by:  "manan_g"
     maintained_by:   "manan_g"
     owner:  "manan_g"
     sensitive:  "yes"
-    environment: "gnostcms"
-    tenant: "gnostcms"
+    environment: "ghostcms"
+    tenant: "ghostcms"
 
 ---
 
@@ -120,7 +120,7 @@ spec:
   instanceProfile: "${INSTANCE_PROFILE}" # replace with your cluster name
   subnetSelectorTerms:
     - tags:
-        karpenter.sh/discovery: "${cluster_name}" # replace with your cluster name
+        karpenter.sh/discovery: "redis-subnet" # replace with your cluster name
   securityGroupSelectorTerms:
     - id: ${EKS_NODE_SG}
 
@@ -137,5 +137,5 @@ spec:
     maintained_by:   "manan_g"
     owner:  "manan_g"
     sensitive:  "yes"
-    environment: "gnostcms"
-    tenant: "gnostcms"
+    environment: "ghostcms"
+    tenant: "ghostcms"

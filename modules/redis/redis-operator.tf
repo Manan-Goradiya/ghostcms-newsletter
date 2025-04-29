@@ -1,7 +1,7 @@
 resource "helm_release" "tz-dev-stag-redis-operator" {
   provider = helm
   name       = "${var.environment}-redis-operator"
-  namespace  = "${var.environment}" #kubernetes_namespace.tz-jsw-prod.metadata[0].name
+  namespace  = "${var.environment}"
   repository = "https://spotahome.github.io/redis-operator"
   chart      = "redis-operator"
   version    = "3.2.9"

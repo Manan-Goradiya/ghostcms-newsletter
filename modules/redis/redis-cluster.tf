@@ -7,8 +7,7 @@ resource "kubernetes_manifest" "tz-dev-stag-redis-cluster" {
     kind       = "RedisFailover"
     metadata = {
       name      = "tz-${var.environment}-redis-cluster"
-      namespace = var.environment #helm_release.tz-jsw-prod-redis-operator.namespace
-      # labels    = local.tz_jsw_prod_labels
+      namespace = var.environment
     }
     spec = {
       redis = {
@@ -36,12 +35,6 @@ resource "kubernetes_manifest" "tz-dev-stag-redis-cluster" {
             }
           }
         }
-        # tolerations = [{
-        #   key      = "app.stateful/component"
-        #   operator = "Equal"
-        #   value    = "${var.environment}-redis-operator"
-        #   effect   = "NoSchedule"
-        # }]
         topologySpreadConstraints = [{
           maxSkew           = 1
           topologyKey       = "topology.kubernetes.io/zone"
@@ -54,7 +47,6 @@ resource "kubernetes_manifest" "tz-dev-stag-redis-cluster" {
           }
         }]
         podAnnotations = {
-        #   "cluster-autoscaler.kubernetes.io/safe-to-evict" = "true"
           "sidecar.istio.io/inject"                        = "false"
         }
         resources = {
@@ -111,23 +103,8 @@ resource "kubernetes_manifest" "tz-dev-stag-redis-cluster" {
                 }]
               }
             }]
-            # requiredDuringSchedulingIgnoredDuringExecution = {
-            #   nodeSelectorTerms = [{
-            #     matchExpressions = [{
-            #       key      = "cloud.google.com/machine-family"
-            #       operator = "In"
-            #       values   = ["n2d"]
-            #     }]
-            #   }]
-            # }
           }
         }
-        # tolerations = [{
-        #   key      = "app.stateful/component"
-        #   operator = "Equal"
-        #   value    = "${var.environment}-redis-operator"
-        #   effect   = "NoSchedule"
-        # }]
         topologySpreadConstraints = [{
           maxSkew           = 1
           topologyKey       = "topology.kubernetes.io/zone"
@@ -140,7 +117,6 @@ resource "kubernetes_manifest" "tz-dev-stag-redis-cluster" {
           }
         }]
         podAnnotations = {
-        #   "cluster-autoscaler.kubernetes.io/safe-to-evict" = "true"
           "sidecar.istio.io/inject"                        = "false"
         }
         resources = {
@@ -162,7 +138,7 @@ resource "kubernetes_service" "tz-dev-stag-redis-cluster" {
   depends_on = [helm_release.tz-dev-stag-redis-operator]
   metadata {
     name      = "tz-${var.environment}-redis-cluster"
-    namespace = var.environment #helm_release.tz-jsw-prod-redis-operator.namespace
+    namespace = var.environment
   }
   spec {
     type = "ClusterIP"

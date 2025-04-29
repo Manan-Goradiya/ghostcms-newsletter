@@ -6,6 +6,12 @@ resource "helm_release" "secrets-store-csi-driver" {
   namespace  = "kube-system"
   timeout    = 10 * 60
 
+  set {
+    name  = "syncSecret.enabled"
+    value = "true"
+  }
+
+
   values = [
     <<VALUES
     syncSecret:
@@ -18,16 +24,6 @@ VALUES
   ]
 }
 
-# data "kubectl_file_documents" "csi-secrets-store" {
-#   content = file("${path.module}/csi-secret-driver.yaml")
-# }
-# https://raw.githubusercontent.com/aws/secrets-store-csi-driver-provider-aws/main/deployment/aws-provider-installer.yaml
-
-# resource "kubectl_manifest" "csi-secrets-store" {
-#   for_each  = data.kubectl_file_documents.csi-secrets-store.manifests
-#   yaml_body = each.value
-# }
-
 
 locals {
   csi_secret_driver_yaml = file("${path.module}/csi-secret-driver.yaml")
@@ -35,22 +31,12 @@ locals {
   manifests = { for idx, doc in local.yaml_documents : idx => doc if trimspace(doc) != "" }
 }
 
-# resource "kubectl_manifest" "csi-secrets-store" {
-#   for_each  = local.manifests
-#   yaml_body = each.value
-# }
+resource "kubectl_manifest" "csi-secrets-store" {
+  for_each  = local.manifests
+  yaml_body = each.value
+}
 
 
-
-# Namespace
-# resource "kubernetes_namespace" "csi-secret-namespace" {
-#   depends_on = [
-#     module.ingress
-#   ]
-#   metadata {
-#     name = "kube-system"
-#   }
-# }
 
 # Trusted entities
 data "aws_iam_policy_document" "secrets_csi_assume_role_policy" {

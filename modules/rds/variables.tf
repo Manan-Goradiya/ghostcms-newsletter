@@ -49,10 +49,7 @@ variable "db_instance_master_username" {
   type = string
   description = "Username for db instance"
 }
-# variable "db_instance_master_password" {
-#   type = string
-#   description = "Password for db instance"
-# }
+
 variable "skip_final_snapshot" {
   type = bool
   description = "whether a final DB snapshot is created before the DB instance is deleted true/false"

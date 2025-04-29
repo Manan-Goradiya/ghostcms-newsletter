@@ -8,6 +8,7 @@ resource "aws_db_instance" "rds" {
   depends_on = [ aws_db_subnet_group.db_subnet_group,random_password.db_password ]
   identifier              = var.db_identifier
   username                = var.db_instance_master_username
+  storage_type              = "gp3"
   password               =  random_password.db_password.result
   instance_class          = var.db_instance_class
   engine                 = var.db_engine

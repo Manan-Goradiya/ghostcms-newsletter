@@ -1,0 +1,52 @@
+{
+  "type": "module",
+  "url": "http://localhost:2368",
+  "server": {
+    "port": 2368,
+    "host": "::"
+  },
+  "mail": {
+    "transport": "Direct"
+  },
+  "logging": {
+    "level": "debug",  
+    "transports": ["file", "stdout"]
+  },
+  "process": "systemd",
+  "paths": {
+    "contentPath": "/var/lib/ghost/content"
+  },
+
+  "storage": {
+  "active": "s3",
+  "media":{
+     "adapter": "s3"
+  },
+  "files": {
+    "adapter": "s3"
+  },
+  "s3": {
+    "accessKeyId": "",
+    "secretAccessKey": "",
+    "region": "ap-south-1",
+    "bucket": "ghostcmss3",
+    "pathPrefix": "ghost",
+    "debug": true
+  }
+},
+
+
+"adapters": {
+  "cache": {
+    "imageSizes": {
+      "adapter": "ghost-cache-adapter-redis"
+    },
+    "ghost-cache-adapter-redis": {
+      "host": "rfr-tz-redis-redis-cluster.redis.svc.cluster.local",
+      "port": 9121
+    }
+  }
+}
+
+
+}
