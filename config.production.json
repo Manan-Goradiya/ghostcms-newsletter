@@ -16,7 +16,7 @@
   "paths": {
     "contentPath": "/var/lib/ghost/content"
   },
-
+ 
   "storage": {
   "active": "s3",
   "media":{
@@ -26,27 +26,10 @@
     "adapter": "s3"
   },
   "s3": {
-    "accessKeyId": "",
-    "secretAccessKey": "",
-    "region": "ap-south-1",
-    "bucket": "ghostcmss3",
+    "assetHost": "https://d2009enpzdxloz.cloudfront.net",
     "pathPrefix": "ghost",
     "debug": true
   }
-},
-
-
-"adapters": {
-  "cache": {
-    "imageSizes": {
-      "adapter": "ghost-cache-adapter-redis"
-    },
-    "ghost-cache-adapter-redis": {
-      "host": "rfr-tz-redis-redis-cluster.redis.svc.cluster.local",
-      "port": 9121
-    }
-  }
 }
-
-
+ 
 }

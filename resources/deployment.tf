@@ -152,20 +152,20 @@ resource "kubernetes_persistent_volume_claim_v1" "ghostcms_efs_pvc_2" {
 
 
 
-resource "kubernetes_config_map" "ghostcms_config" {
-  metadata {
-    name      = "ghostcms-config"
-    namespace = "ghostcms" # Replace with your namespace if needed
-  }
+# resource "kubernetes_config_map" "ghostcms_config" {
+#   metadata {
+#     name      = "ghostcms-config"
+#     namespace = "ghostcms" # Replace with your namespace if needed
+#   }
 
-  data = {
-    "config.production.json" = "${file("${path.module}/config.production.json")}"
-  }
+#   data = {
+#     "config.production.json" = "${file("${path.module}/config.production.json")}"
+#   }
 
-  # binary_data = {
-  #   "my_payload.bin" = "${filebase64("${path.module}/my_payload.bin")}"
-  # }
-}
+#   # binary_data = {
+#   #   "my_payload.bin" = "${filebase64("${path.module}/my_payload.bin")}"
+#   # }
+# }
 
 
 
@@ -177,7 +177,7 @@ resource "kubernetes_config_map" "ghostcms_config" {
 
 # Deploy Ghost CMS
 resource "kubernetes_deployment" "ghost" {
-  depends_on = [kubernetes_persistent_volume_claim_v1.ghostcms_efs_pvc, kubernetes_storage_class_v1.ghostcms_efs_sc, kubernetes_manifest.ghostcms_secret_provider_class, kubernetes_config_map.ghostcms_config]
+  depends_on = [kubernetes_persistent_volume_claim_v1.ghostcms_efs_pvc, kubernetes_storage_class_v1.ghostcms_efs_sc, kubernetes_manifest.ghostcms_secret_provider_class, /*kubernetes_config_map.ghostcms_config*/]
   metadata {
     name      = "ghost"
     namespace = "ghostcms" # Replace with your namespace if needed
@@ -221,12 +221,12 @@ resource "kubernetes_deployment" "ghost" {
           }
         }
 
-        volume {
-          name = "ghostcms-vol-2"
-          persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim_v1.ghostcms_efs_pvc_2.metadata[0].name
-          }
-        }
+        # volume {
+        #   name = "ghostcms-vol-2"
+        #   persistent_volume_claim {
+        #     claim_name = kubernetes_persistent_volume_claim_v1.ghostcms_efs_pvc_2.metadata[0].name
+        #   }
+        # }
 
         # volume {
         #   name = "ghostcms-vol"
@@ -246,22 +246,22 @@ resource "kubernetes_deployment" "ghost" {
             }
           }
         }
-        volume {
-          name = "ghost-configmap"
-          config_map {
-            name = kubernetes_config_map.ghostcms_config.metadata[0].name
-            items {
-              key  = "config.production.json"
-              path = "config.production.json" # Specify the file name if needed
-            }
-          }
-        }
+        # volume {
+        #   name = "ghost-configmap"
+        #   config_map {
+        #     name = kubernetes_config_map.ghostcms_config.metadata[0].name
+        #     items {
+        #       key  = "config.production.json"
+        #       path = "config.production.json" # Specify the file name if needed
+        #     }
+        #   }
+        # }
 
         service_account_name = "ghostcms-sa"
         container {
           name = "ghost"
-          image = "ghost:latest"
-          # image = "165551903801.dkr.ecr.ap-south-1.amazonaws.com/ghostcms:latest-7"
+          # image = "ghost:latest"
+          image = "165551903801.dkr.ecr.ap-south-1.amazonaws.com/ghostcms:latest-24"
           port {
             container_port = 2368
           }
@@ -284,8 +284,12 @@ resource "kubernetes_deployment" "ghost" {
             value = "ap-south-1"
           }
           env {
-            name  = "GHOST_STORAGE_ADAPTER_S3_PATH_BUCKET"
-            value = "ghost"
+            name  = "AWS_REGION"
+            value = "ap-south-1"
+          }          
+          env {
+            name  = "GHOST_STORAGE_ADAPTER_S3_PATH_BUCKET" //the description regarding this variable is given wrongly in the documentation
+            value = "ghostcmss3"
           }
           env {
             name = "database__connection__host"
@@ -351,6 +355,16 @@ resource "kubernetes_deployment" "ghost" {
               } 
             }
           }
+
+          env {
+            name = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST"  
+            value_from {
+              secret_key_ref {
+                name = "secret-ghostcms"
+                key = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST"
+              } 
+            }
+          }          
         
 
           resources {
@@ -371,6 +385,7 @@ resource "kubernetes_deployment" "ghost" {
           volume_mount {
             name       = "ghostcms-vol"
             mount_path = "/var/lib/ghost/content"
+            # mount_path = "/"
           }
 
           # volume_mount {
@@ -612,6 +627,8 @@ resource "kubernetes_manifest" "ghostcms_secret_provider_class" {
                 objectAlias: bucket
               - path: secretAccessKey
                 objectAlias: secretAccessKey
+              - path: GHOST_STORAGE_ADAPTER_S3_ASSET_HOST  
+                objectAlias: GHOST_STORAGE_ADAPTER_S3_ASSET_HOST  
 
           EOT
       }
@@ -629,9 +646,8 @@ resource "kubernetes_manifest" "ghostcms_secret_provider_class" {
           { objectName = "url", key = "url" },
           { objectName = "accessKeyId", key = "accessKeyId" },
           { objectName = "secretAccessKey", key = "secretAccessKey" },
-          { objectName = "bucket", key = "bucket" }
-
-
+          { objectName = "bucket", key = "bucket" },
+          { objectName = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST", key = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST" }          
         ]
       }]
     }

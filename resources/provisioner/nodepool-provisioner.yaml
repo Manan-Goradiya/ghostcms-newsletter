@@ -17,7 +17,7 @@ spec:
           values: ["t"]
         - key: karpenter.k8s.aws/instance-family
           operator: In
-          values: ["t4g", "t3a"]
+          values: ["t3a"]
         - key: karpenter.k8s.aws/instance-size
           operator: In
           values: ["medium","large","xlarge","2xlarge","small"]
