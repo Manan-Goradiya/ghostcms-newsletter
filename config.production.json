@@ -1,10 +1,15 @@
 {
   "type": "module",
-  "url": "http://localhost:2368",
+  "url": "https://manandevops.site",
   "server": {
     "port": 2368,
     "host": "::"
   },
+
+  "admin": {
+        "url": "https://ghost.manandevops.site"
+    },
+
   "mail": {
     "transport": "Direct"
   },
@@ -27,7 +32,7 @@
   },
   "s3": {
     "assetHost": "https://d2009enpzdxloz.cloudfront.net",
-    "pathPrefix": "ghost",
+    "pathPrefix": "ghostimages",
     "debug": true
   }
 }

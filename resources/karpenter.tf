@@ -2,7 +2,7 @@ module "karpenter" {
   source                = "../modules/karpenter"
   depends_on            = [module.eks_cluster]
   cluster_name          = var.eks_cluster_name
-  cluster_endpoint      = module.eks_cluster.cluster_endpoint 
+  cluster_endpoint      = module.eks_cluster.cluster_endpoint
   role_name             = "ghostcms-karpenter-controller-role"
   provider_url          = module.eks_cluster.cluster_provider_url
   karpenter_namespace   = "karpenter"
@@ -27,7 +27,7 @@ locals {
         for doc in split("---", file("${path.module}/provisioner/${file}")) :
         trimspace(doc) if trimspace(doc) != ""
         ] : {
-        key   = "${file}-${i}" 
+        key   = "${file}-${i}"
         file  = file
         index = i
       }

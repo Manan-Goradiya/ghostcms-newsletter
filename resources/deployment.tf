@@ -72,20 +72,20 @@ resource "kubernetes_storage_class" "ebs_standard" {
   }
 
   storage_provisioner = "kubernetes.io/aws-ebs"
-  reclaim_policy     = "Retain" # Or "Delete" for auto-cleanup
+  reclaim_policy      = "Retain" # Or "Delete" for auto-cleanup
   volume_binding_mode = "Immediate"
 
   parameters = {
-    type = "gp3"  # Allowed: gp2, gp3, io1, io2, sc1, st1
-    fsType = "ext4"  # File system type
-    encrypted = "true"  # Enable EBS encryption
+    type      = "gp3"  # Allowed: gp2, gp3, io1, io2, sc1, st1
+    fsType    = "ext4" # File system type
+    encrypted = "true" # Enable EBS encryption
     # iopsPerGB = "50"  # Only for io1/io2 types
     # throughput = "250"  # Only for gp3 (MiB/s)
   }
 
   # For production clusters, add these:
   allow_volume_expansion = true
-  mount_options = ["debug"]  # Optional mount flags
+  mount_options          = ["debug"] # Optional mount flags
 }
 
 
@@ -117,7 +117,7 @@ resource "kubernetes_persistent_volume_claim_v1" "ghostcms_efs_pvc" {
 resource "kubernetes_persistent_volume_claim_v1" "ghostcms_efs_pvc_2" {
   metadata {
     name      = "ghostcms-efs-pvc-2" # Replace with your desired name
-    namespace = "ghostcms"         # Replace with your namespace if needed
+    namespace = "ghostcms"           # Replace with your namespace if needed
   }
   spec {
     access_modes = ["ReadWriteMany"]
@@ -261,7 +261,7 @@ resource "kubernetes_deployment" "ghost" {
         container {
           name = "ghost"
           # image = "ghost:latest"
-          image = "165551903801.dkr.ecr.ap-south-1.amazonaws.com/ghostcms:latest-24"
+          image = "165551903801.dkr.ecr.ap-south-1.amazonaws.com/ghostcms:latest-27"
           port {
             container_port = 2368
           }
@@ -286,7 +286,7 @@ resource "kubernetes_deployment" "ghost" {
           env {
             name  = "AWS_REGION"
             value = "ap-south-1"
-          }          
+          }
           env {
             name  = "GHOST_STORAGE_ADAPTER_S3_PATH_BUCKET" //the description regarding this variable is given wrongly in the documentation
             value = "ghostcmss3"
@@ -333,9 +333,9 @@ resource "kubernetes_deployment" "ghost" {
             value_from {
               secret_key_ref {
                 name = "secret-ghostcms"
-                key  = "url" 
+                key  = "url"
               }
-            }   
+            }
           }
           env {
             name = "AWS_ACCESS_KEY_ID"
@@ -343,29 +343,29 @@ resource "kubernetes_deployment" "ghost" {
               secret_key_ref {
                 name = "secret-ghostcms"
                 key  = "accessKeyId"
-              }     
+              }
             }
           }
           env {
-            name = "AWS_SECRET_ACCESS_KEY"  
+            name = "AWS_SECRET_ACCESS_KEY"
             value_from {
               secret_key_ref {
                 name = "secret-ghostcms"
-                key = "secretAccessKey"
-              } 
+                key  = "secretAccessKey"
+              }
             }
           }
 
           env {
-            name = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST"  
+            name = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST"
             value_from {
               secret_key_ref {
                 name = "secret-ghostcms"
-                key = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST"
-              } 
+                key  = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST"
+              }
             }
-          }          
-        
+          }
+
 
           resources {
             requests = {
@@ -647,7 +647,7 @@ resource "kubernetes_manifest" "ghostcms_secret_provider_class" {
           { objectName = "accessKeyId", key = "accessKeyId" },
           { objectName = "secretAccessKey", key = "secretAccessKey" },
           { objectName = "bucket", key = "bucket" },
-          { objectName = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST", key = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST" }          
+          { objectName = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST", key = "GHOST_STORAGE_ADAPTER_S3_ASSET_HOST" }
         ]
       }]
     }

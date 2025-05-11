@@ -1,5 +1,5 @@
-vpc_name = "ghostcms-vpc"
-region   = "ap-south-1"
+vpc_name                 = "ghostcms-vpc"
+region                   = "ap-south-1"
 eks_cluster_name         = "ghostcms-eks"
 vpc_cidr                 = "172.22.0.0/16"
 private_subnet_cidr_1    = "172.22.4.0/22"
